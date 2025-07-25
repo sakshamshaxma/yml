@@ -1,0 +1,25 @@
+---
+- name: Deploy Node.js application
+  hosts: dockerstaging
+  become: true
+
+  tasks:
+    - name: Change to application directory
+      command: cd /srv/ms_tourneypannel/
+      args:
+        chdir: /srv/ms_tourneypannel/
+
+    - name: Pull latest code from Git repository
+      git:
+        repo: 'https://github.com/itsilveredgein/ms_tourneypannel.git'
+        dest: /srv/ms_tourneypannel/
+        version: Release1.0
+
+    - name: Install npm dependencies
+      npm:
+        path: /srv/ms_tourneypannel/
+
+    - name: Restart pm2 process
+      command: pm2 restart tp_pannel
+      args:
+        chdir: /srv/ms_tourneypannel/

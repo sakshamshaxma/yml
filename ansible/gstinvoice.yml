@@ -1,0 +1,26 @@
+---
+- name: Copy JAR file and manage service
+  hosts: dockerstaging
+  tasks:
+    - name: Copy JAR file
+      copy:
+        src: /var/lib/jenkins/workspace/javastaging/gstinvoice/target/GSTService.jar
+        dest: /opt/java/gstinvoice/
+
+    - name: Restart gstinvoice service
+      become: true
+      systemd:
+        name: gstinvoice.service
+        state: restarted
+
+    - name: Get gstinvoice service status
+      become: true
+      systemd:
+        name: gstinvoice.service
+        state: started
+        enabled: yes
+      register: service_status
+
+    - name: Show gstinvoice service status
+      debug:
+        msg: "{{ service_status }}"

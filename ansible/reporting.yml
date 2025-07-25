@@ -1,0 +1,26 @@
+---
+- name: Copy JAR file and manage service
+  hosts: dockerstaging
+  tasks:
+    - name: Copy JAR file
+      copy:
+        src: /var/lib/jenkins/workspace/javastaging/reporting/build/libs/reporting-0.0.1-SNAPSHOT.jar
+        dest: /opt/java/reporting/
+
+    - name: Restart reporting service
+      become: true
+      systemd:
+        name: reportingservice.service
+        state: restarted
+
+    - name: Get reporting service status
+      become: true
+      systemd:
+        name: reportingservice.service
+        state: started
+        enabled: yes
+      register: service_status
+
+    - name: Show reporting service status
+      debug:
+        msg: "{{ service_status }}"

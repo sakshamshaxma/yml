@@ -1,0 +1,28 @@
+---
+- name: Copy JAR file and manage service
+  hosts: dockerstaging
+  tasks:
+    - name: Copy JAR file
+      copy:
+        src: /var/lib/jenkins/workspace/javastaging/adminpanelservice/target/AdminPanelService-0.0.1-SNAPSHOT.jar
+        dest: /opt/java/adminpanelservice/
+
+    - name: Restart adminpanelservice service
+      become: true
+      systemd:
+        name: adminpanelservice.service
+        state: restarted
+
+    - name: Get adminpanelserviceservice status
+      become: true
+      systemd:
+        name: adminpanelservice.service
+        state: started
+        enabled: yes
+      register: service_status
+
+    - name: Show adminpanelserviceservice status
+      debug:
+        msg: "{{ service_status }}"
+
+

@@ -1,0 +1,14 @@
+---
+- name: SFSPlaybook
+  hosts: gamestaging
+  become: yes
+  become_user: root
+  tasks:
+    - name: 'Proceed for Stopping SFX'
+      ansible.builtin.shell: ./sfs2x-service start
+      args:
+        chdir: /gameserver/SmartFoxServer_2X/SFS2X/
+      register: result
+    - name: Print return information from the previous task
+      ansible.builtin.debug:
+        var: result

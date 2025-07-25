@@ -1,0 +1,26 @@
+---
+- name: Copy JAR file and manage service
+  hosts: dockerstaging
+  tasks:
+    - name: Copy JAR file
+      copy:
+        src: /var/lib/jenkins/workspace/javastaging/playerapis/target/pokerrest.jar
+        dest: /opt/java/pokerrest/
+
+    - name: Restart playerapi service
+      become: true
+      systemd:
+        name: playerapiservice.service
+        state: restarted
+
+    - name: Get playerapi service status
+      become: true
+      systemd:
+        name: playerapiservice.service
+        state: started
+        enabled: yes
+      register: service_status
+
+    - name: Show reporting service status
+      debug:
+        msg: "{{ service_status }}"

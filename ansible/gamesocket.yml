@@ -1,0 +1,26 @@
+---
+- name: Copy JAR file and manage service
+  hosts: dockerstaging
+  tasks:
+    - name: Copy JAR file
+      copy:
+        src: /var/lib/jenkins/workspace/javastaging/gamesocket/target/gameSocketService.jar
+        dest: /opt/java/msgamesocket/
+
+    - name: Restart gamesocket service
+      become: true
+      systemd:
+        name: gamesocketservice.service
+        state: restarted
+
+    - name: Get gamesocket service status
+      become: true
+      systemd:
+        name: gamesocketservice.service
+        state: started
+        enabled: yes
+      register: service_status
+
+    - name: Show gamesocket service status
+      debug:
+        msg: "{{ service_status }}"

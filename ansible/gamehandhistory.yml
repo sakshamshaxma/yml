@@ -1,0 +1,28 @@
+---
+- name: Copy JAR file and manage service
+  hosts: dockerstaging
+  tasks:
+    - name: Copy JAR file
+      copy:
+        src: /var/lib/jenkins/workspace/javastaging/gamehandhistory/target/GameHistoryReplay.jar
+        dest: /opt/java/gamehandhistory/
+
+    - name: Restart gamehandhistory service
+      become: true
+      systemd:
+        name: gamehandhistory.service
+        state: restarted
+
+    - name: Get gamehandhistory status
+      become: true
+      systemd:
+        name: gamehandhistory.service
+        state: started
+        enabled: yes
+      register: service_status
+
+    - name: Show gamehandhistory status
+      debug:
+        msg: "{{ service_status }}"
+
+

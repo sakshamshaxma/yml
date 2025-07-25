@@ -1,0 +1,45 @@
+- name: Ansible Copy JAR Files
+  hosts: gamestaging
+  become: yes
+  become_user: root
+  tasks:
+    - name: Copying the TaashkingCommon Jar File
+      become: true 
+      copy:
+        src: /var/lib/jenkins/workspace/javastaging/SFS/Java_Build_Jobs/gradle/taaskingclient.server/TaashkingCommon/build/libs/TaashKingCommon.jar
+        dest: /gameserver/SmartFoxServer_2X/SFS2X/extensions/__lib__/
+      register: result
+    
+    - name: Copying the Taashking Jar File
+      become: true
+      copy:
+        src: /var/lib/jenkins/workspace/javastaging/SFS/Java_Build_Jobs/gradle/taaskingclient.server/taashking/build/libs/Taashking.jar
+        dest: /gameserver/SmartFoxServer_2X/SFS2X/extensions/MyFirstExtension/
+
+    - name: Copying the UserCommon Jar File
+      become: true
+      copy:
+        src: /var/lib/jenkins/workspace/javastaging/SFS/Java_Build_Jobs/gradle/taaskingclient.userDB/UserCommon/build/libs/UserCommon.jar
+        dest: /gameserver/SmartFoxServer_2X/SFS2X/extensions/__lib__/
+    
+    - name: Copying the Log4J File
+      become: true
+      copy:
+        src: /var/lib/jenkins/workspace/javastaging/deploymentconfigstaging/SFS/log4j.properties
+        dest: /gameserver/SmartFoxServer_2X/SFS2X/config/
+
+    - name: Copying the logParser File
+      become: true
+      copy:
+        src: /var/lib/jenkins/workspace/javastaging/deploymentconfigstaging/SFS/logParser.properties
+        dest: /gameserver/SmartFoxServer_2X/SFS2X/config/     
+    
+          #- name: Copying the serverxml File
+          #become: true
+          #copy:
+          #src: /var/lib/jenkins/workspace/javastaging/deploymentconfig/SFS/server.xml
+          #dest: /gameserver/SmartFoxServer_2X/SFS2X/config/
+
+    - name: Print return information from the previous task
+      ansible.builtin.debug:
+        var: result
